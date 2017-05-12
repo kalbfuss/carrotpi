@@ -1,0 +1,39 @@
+body common control
+{
+  inputs => 
+  {
+    # Standard library
+    "$(sys.libdir)/stdlib.cf",
+
+    # CarrotPi
+    "users.cf",
+    "mail.cf"
+  };
+
+  bundlesequence => 
+  {
+    "users",
+    "mail"
+  };
+}
+
+
+bundle agent users
+{
+  vars:
+    "users[admin][description]" string => "CarrotPi administrator";
+    "users[admin][password]"    string => "admin";
+    "users[admin][groups]"      slist  => { "sudo" };
+
+  methods:
+    "create_users" usebundle => create_users("users.users");
+}
+
+
+bundle agent mail 
+{
+  vars:
+
+  methods:
+    "install_mail_server" usebundle => install_mail_server;
+}

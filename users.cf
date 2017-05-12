@@ -4,6 +4,7 @@ bundle agent create_users(users)
     "userid" slist => getindices("$(users)");
 
   users:
+    # Create or modify users
     "$(userid)"
       policy => "present",
       description => "$($(users)[$(userid)][description])",
@@ -17,8 +18,14 @@ bundle agent create_users(users)
 bundle agent setup_home_dir(userid)
 {
   files:
+    # Create home directory
     "/home/$(userid)/."
       create => "true",
-      copy_from => seed_cp("/home/skel/."),
-      depth_search => recurse("inf");
+      perms => mog("755", "$(userid)", "$(userid)");
+
+    # Populate home directory with skeleton 
+    "/home/$(userid)/."
+      copy_from => seed_cp("/etc/skel"),
+      depth_search => recurse("inf"),
+      perms => og("$(userid)", "$(userid)");
 }
