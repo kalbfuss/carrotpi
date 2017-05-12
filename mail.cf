@@ -1,0 +1,6 @@
+bundle agent install_mail_server
+{
+  packages:
+    "postfix"
+      package_policy => "addupdate";
+}

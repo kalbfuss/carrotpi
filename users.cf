@@ -1,0 +1,24 @@
+bundle agent create_users(users)
+{
+  vars:
+    "userid" slist => getindices("$(users)");
+
+  users:
+    "$(userid)"
+      policy => "present",
+      description => "$($(users)[$(userid)][description])",
+      groups_secondary => { "@($(users)[$(userid)][groups])" },
+      password => plaintext_password("$(users)[$(userid)][password]"),
+      home_dir => "/home/$(userid)",
+      home_bundle => setup_home_dir("$(userid)");
+}
+
+
+bundle agent setup_home_dir(userid)
+{
+  files:
+    "/home/$(userid)/."
+      create => "true",
+      copy_from => seed_cp("/home/skel/."),
+      depth_search => recurse("inf");
+}
